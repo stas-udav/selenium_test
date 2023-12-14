@@ -10,7 +10,7 @@ def open_website():
         for checkbox in check_box_names:
             check_box_name = checkbox.text # Get the text of the element
             check_box_values.append(check_box_name) #add text from checkbox to the list 
-        return(check_box_values)
+        return (check_box_values)
     def get_green_ckeckbox_values():
         green_list = driver.find_elements(By.XPATH, '//span[@class="text-success"]')
         green_list_length = len(green_list)
@@ -20,6 +20,16 @@ def open_website():
             green_name = green_value.text
             green_checked_values.append(green_name)
         return(green_checked_values, green_list_length)
+    # checking if checkbox selected correctly 
+    def get_checkbox_status():
+        # Получаем значения после второго клика
+        check_box_values_after_click = get_checkbox_value()
+        green_checked_values_after_click = get_green_ckeckbox_values()[0]
+
+        if check_box_values_after_click == green_checked_values:
+            return "Zaebca"
+        else:
+            return "Pizdec"
         # Create a new browser instance
     driver = webdriver.Chrome()    
        # Fullscrin browser
@@ -48,32 +58,14 @@ def open_website():
     # time.sleep(2)
     check_box_values = get_checkbox_value()
     print(check_box_values)
-    # check_box_names = driver.find_elements(By.XPATH, '//span[@class="rct-title"]')
-    # check_box_values = []
-    # for checkbox in check_box_names:
-    #     check_box_name = checkbox.text # Get the text of the element
-    #     check_box_values.append(check_box_name) #add text from checkbox to the list 
-    # print(check_box_values)
-    
-    #  # Print each checkbox name in a separate line
-    # for checkbox_name in check_box_values:
-    #     print(checkbox_name)        
+       
     time.sleep(2)
 
     #turn on all checkboxes and comper to previos checkbox varible 
     main_checkbox = checkbox_list[0] #looking for 1 checkbox in list
     main_checkbox.click() #click on main checkbox for marcking all checkboxes
     time.sleep(2)
-
-    # green_list = driver.find_elements(By.XPATH, '//span[@class="text-success"]')
-    # green_list_length = len(green_list)
-    # print(green_list_length)
-    # green_checked_values = []
-    # for green_value in green_list:
-    #     green_name = green_value.text
-    #     green_checked_values.append(green_name)
-    # green_checked_values = get_green_ckeckbox_values()
-    
+     
     green_list_length = get_green_ckeckbox_values()[1]
     green_checked_values = get_green_ckeckbox_values()[0]
     print(green_checked_values)
@@ -81,27 +73,40 @@ def open_website():
         print("Amount of elements before active state and after is equal")
     else:
         print("Пиздец товарищи...")
-
-    if check_box_values == green_checked_values:
-        print("Zaebca")
-    else:
-        print("Pizdec")
     time.sleep(2)
-        # Checking if all checkboxes working one by one
-    #expand_all.click()
-    main_checkbox.click() #unselect all checkbox by clicking on main checkbox
-    time.sleep(3)
-    # Desktop_check_box = driver.find_element(By.XPATH, '//span[@class="rct-title" and contains(text(), \"Desktop\")]') 
-    # Desktop_check_box.click()
+    checbox_status = get_checkbox_status()
+    print(checbox_status)
+    
+    time.sleep(2)
 
+        # Checking if all checkboxes working one by one    
+    main_checkbox.click() #unselect all checkbox by clicking on main checkbox
+    time.sleep(2)
+    
     # Checking status of working checkbox
-    def toggle_checkbox(checkbox):
-        """toggling checkbox to turn on/off"""
-        checkbox.click() 
-    toggle_checkbox(checkbox_list[1])
-    print(get_green_ckeckbox_values()[0])
-    time.sleep(1)
-    toggle_checkbox(checkbox_list[1])
+    # driver.find_elements(By.XPATH, '//span[@class="rct-checkbox"]')[1].click()
+    # checbox_status = get_checkbox_status()
+    # print(checbox_status)
+
+
+    # Checking status of working checkbox for each checkbox
+    checkbox_status_dict = {} # Checkbox Name and Checbox status name
+    for box in range(1, amount_of_checkboxes_on_the_page):
+        driver.execute_script("arguments[0].click();", checkbox_list[box]) #click on checkbox
+        time.sleep(2)
+        checbox_status = get_checkbox_status()
+        if checbox_status == "Pizdec": 
+           green_checked_values = get_green_ckeckbox_values()[0]
+           checkbox_name = get_checkbox_value()[box]
+           checkbox_status_dict[checkbox_name] = green_checked_values
+            
+        print(checbox_status)
+        print(checkbox_status_dict)
+        
+        time.sleep(2)
+        driver.execute_script("arguments[0].click();", checkbox_list[box]) #click on checkbox for unselect
+        time.sleep(2)
+
     time.sleep(5)
     driver.close()
 
