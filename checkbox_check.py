@@ -61,7 +61,7 @@ def open_website():
        
     time.sleep(2)
 
-    #turn on all checkboxes and comper to previos checkbox varible 
+    #turn on all checkboxes and compare to previos checkbox varible 
     main_checkbox = checkbox_list[0] #looking for 1 checkbox in list
     main_checkbox.click() #click on main checkbox for marcking all checkboxes
     time.sleep(2)
@@ -74,8 +74,8 @@ def open_website():
     else:
         print("Пиздец товарищи...")
     time.sleep(2)
-    checbox_status = get_checkbox_status()
-    print(checbox_status)
+    checkbox_status = get_checkbox_status()
+    print(checkbox_status)
     
     time.sleep(2)
 
@@ -83,33 +83,32 @@ def open_website():
     main_checkbox.click() #unselect all checkbox by clicking on main checkbox
     time.sleep(2)
     
-    # Checking status of working checkbox
-    # driver.find_elements(By.XPATH, '//span[@class="rct-checkbox"]')[1].click()
-    # checbox_status = get_checkbox_status()
-    # print(checbox_status)
-
-
-    # Checking status of working checkbox for each checkbox
+       # Checking status of working checkbox for each checkbox
     checkbox_status_dict = {} # Checkbox Name and Checbox status name
-    for box in range(1, amount_of_checkboxes_on_the_page):
+    check_box_values = get_checkbox_value()
+    for box in range(len(checkbox_list)):        
+        # for check_box_name in check_box_values:
+        #     return check_box_name
+        #print(check_box_name)
+        check_box_name = check_box_values[box]
+        
         driver.execute_script("arguments[0].click();", checkbox_list[box]) #click on checkbox
         time.sleep(2)
-        checbox_status = get_checkbox_status()
-        if checbox_status == "Pizdec": 
+        
+        if checkbox_status == "Pizdec": 
            green_checked_values = get_green_ckeckbox_values()[0]
-           checkbox_name = get_checkbox_value()[box]
-           checkbox_status_dict[checkbox_name] = green_checked_values
+        
+           checkbox_status_dict[check_box_name] = green_checked_values
             
-        print(checbox_status)
-        print(checkbox_status_dict)
+        print(checkbox_status)
+        
         
         time.sleep(2)
         driver.execute_script("arguments[0].click();", checkbox_list[box]) #click on checkbox for unselect
         time.sleep(2)
-
+    print(checkbox_status_dict)
     time.sleep(5)
     driver.close()
-
 
 if __name__ == "__main__":
     open_website()
