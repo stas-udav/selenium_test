@@ -13,7 +13,7 @@ def get_checkbox_value(driver):
     return (check_box_values)
 
     # Getting checkbox selected status check on the bottom of the page(marked green color)
-def get_green_ckeckbox_values():
+def get_green_ckeckbox_values(driver):
     green_list = driver.find_elements(By.XPATH, '//span[@class="text-success"]')
     green_list_length = len(green_list)
     # print(green_list_length)
@@ -25,7 +25,7 @@ def get_green_ckeckbox_values():
     # checking if checkbox selected correctly 
 
     
-def get_checkbox_status():
+def get_checkbox_status(driver):
     # Получаем значения после второго клика
     check_box_values_after_click = get_checkbox_value()
     green_checked_values_after_click = get_green_ckeckbox_values()[0]
