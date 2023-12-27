@@ -41,25 +41,43 @@ def get_checkbox_selector_status(driver, value):
     checbox_len, check_box_values = get_checkbox_value(driver)    
     xpath_selector = f"//span[contains(text(), {value})]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
     element = driver.find_element(By.XPATH, xpath_selector)
-    class_string = element.get_attribute("class")
-    return(class_string)
+    class_string = element.get_attribute("class")    
     # print(class_string)
     # print(xpath_selector)
-    # if "rct-icon-check" in class_string:
-    #     print(True)
-    # elif "rct-icon-uncheck":
-    #     print(False)
-    # else: 
-    #     print("Not a checkbox_status")
+    if "rct-icon rct-icon-check" in class_string:
+        print("Selected")
+    elif "rct-icon rct-icon-uncheck":
+        print("Unselected")
+    else: 
+        print("Not a checkbox_status")
+    return(class_string)
 
 def get_checkbox_elemen(driver, value): #getting checkbox element and xpath
     xpath_selector = f"//span[contains(text(), {value})]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
         #Find the elements
-    element = driver.find_element(By.XPATH, xpath_selector)       
+    element = driver.find_element(By.XPATH, xpath_selector) 
+    # print(xpath_selector)
     return(element)
-    # return checkbox_list
-
+    
 def report_json(driver, path, report_dict):
     with open(path,"w") as json_file:
         json.dump(report_dict, json_file)
     time.sleep(2)
+
+ # Comparing the original checkbox and green checkbox value(Checkbox names)
+def comparing_selected_selectors(driver, checkbox_list, green_checkbox_list):
+    comparing_values = {} # creating dict with original checkbox = key and green checkbox = value(receiving from function green_checked_values)
+    not_aligned_values = []
+    report_dict = {}  # dict for writing in json where key = checkbox name, value =   (boolean, green checkbox)
+       
+    for index, value in enumerate(checkbox_list): #Adding pairs of a selected checkbox and a green checkbox (should be the same)
+        comparing_values[value] = green_checkbox_list[index]
+    # Comparing the original checkbox (key) to the green checkbox (value)
+    for checkbox_original, gren_checkbox in comparing_values.items(): 
+        if checkbox_original != gren_checkbox:
+            not_aligned_values.append(gren_checkbox)
+    for index, original_checkbox in enumerate(checkbox_list): # getting index od checkbox_list and original_checkbox
+        green_checkbox = green_checkbox_list[index] # getting green_checkbox with same index like in checkbox_list
+        report_dict[original_checkbox] = [original_checkbox == green_checkbox, green_checkbox]
+    return(comparing_values, not_aligned_values, report_dict)
+

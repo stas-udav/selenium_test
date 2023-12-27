@@ -16,10 +16,6 @@ time.sleep(1)
 
     #Checking if 1th checkbox is selected on loaded page
 checkbox_staus_Home = get_checkbox_selector_status(driver, "Home")
-if checkbox_staus_Home == "rct-icon rct-icon-uncheck":
-    print("Unselected")
-else:
-    print("Selected")
 
 expand_all = driver.find_element(By.XPATH, '//button[@aria-label="Expand all"]') #expand all checbox tree
 expand_all.click()
@@ -42,19 +38,33 @@ get_checkbox_elemen(driver, "Home").click() #unselect all checkboxes by clicking
 time.sleep(1)
 
     # Comparing the original checkbox and green checkbox value(Checkbox names)
-comparing_values = {} # creating dict with original checkbox = key and green checkbox = value(receiving from function green_checked_values)
-not_aligned_values = []
-report_dict = {}  # dict for writing in json where key = checkbox name, value =   (boolean, green checkbox)
-
-for index, value in enumerate(checkbox_list): #Adding pairs of a selected checkbox and a green checkbox (should be the same)
-    comparing_values[value] = green_checkbox_list[index]
-# Comparing the original checkbox (key) to the green checkbox (value)
-for checkbox_original, gren_checkbox in comparing_values.items(): 
-    if checkbox_original != gren_checkbox:
-        not_aligned_values.append(gren_checkbox)
-for index, original_checkbox in enumerate(checkbox_list): 
-        green_checkbox = green_checkbox_list[index]
-        report_dict[original_checkbox] = [original_checkbox == green_checkbox, green_checkbox]
+comparing_values, not_aligned_values, report_dict = comparing_selected_selectors(driver,checkbox_list, green_checkbox_list)
 time.sleep(1)
 
 report_json(driver, "checkbox_errors_on_turn_on.json", report_dict) #Saving report of not aligned checkbox names
+time.sleep(1)
+
+    # Unselecting main selectors in a category and checking if it does not affect other selected checkboxes
+get_checkbox_elemen(driver, "Home").click() # turn on all checkboxes
+
+time.sleep(1)
+ # Scroll down 
+driver.execute_script("window.scrollTo(0, 500);")
+time.sleep(1)
+
+Selectors = ['Downloads', 'Office', 'Documents', 'Desktop']
+checkbox_statuses_before = {}
+for value in Selectors:
+    checkbox_statuses_before[value] = get_checkbox_selector_status(driver, value)
+    get_checkbox_elemen(driver, value).click()
+    time.sleep(2)
+    # Проверьте статусы остальных чекбоксов после изменения
+    affected_checkboxes = []
+    for selector in Selectors:
+        if checkbox_statuses_before[value] == "rct-icon rct-icon-check" :
+            affected_checkboxes.append(value)
+    time.sleep(1)
+    # Выведите результаты
+    print(selector, affected_checkboxes)
+    time.sleep(1)
+time.sleep(1)
