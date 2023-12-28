@@ -56,15 +56,18 @@ Selectors = ['Downloads', 'Office', 'Documents', 'Desktop']
 checkbox_statuses_before = {}
 for value in Selectors:
     checkbox_statuses_before[value] = get_checkbox_selector_status(driver, value)
-    get_checkbox_elemen(driver, value).click()
-    time.sleep(2)
-    # Проверьте статусы остальных чекбоксов после изменения
-    affected_checkboxes = []
-    for selector in Selectors:
-        if checkbox_statuses_before[value] == "rct-icon rct-icon-check" :
-            affected_checkboxes.append(value)
     time.sleep(1)
-    # Выведите результаты
-    print(selector, affected_checkboxes)
+    print(value)
+    click = get_checkbox_elemen(driver, value)
     time.sleep(1)
-time.sleep(1)
+    click.click()
+    time.sleep(1)
+#     # Проверьте статусы остальных чекбоксов после изменения
+#     affected_checkboxes = {}
+#     for selector in Selectors:
+#         affected_checkboxes[value] = get_checkbox_selector_status(driver, value)            
+#         time.sleep(1)
+    
+#     print(checkbox_statuses_before, affected_checkboxes)
+#     time.sleep(1)
+# time.sleep(1)
