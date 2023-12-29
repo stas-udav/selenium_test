@@ -52,7 +52,7 @@ time.sleep(1)
 driver.execute_script("window.scrollTo(0, 200);")
 time.sleep(1)
 
-Selectors = ["'Downloads'", "'Office'", "'WorkSpace'", "'Desktop'"]
+Selectors = ["Downloads", "Office", "WorkSpace", "Desktop"]
 get_affected_checkboxes(driver, Selectors)
 
 time.sleep(1)

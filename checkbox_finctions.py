@@ -39,7 +39,7 @@ def get_checkbox_status(driver):
   
 def get_checkbox_selector_status(driver, value):
     checbox_len, check_box_values = get_checkbox_value(driver)    
-    xpath_selector = f"//span[contains(text(), {value})]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
+    xpath_selector = f"//span[contains(text(), '{value}')]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
     element = driver.find_element(By.XPATH, xpath_selector)
     class_string = element.get_attribute("class")    
     # print(class_string)
@@ -53,7 +53,7 @@ def get_checkbox_selector_status(driver, value):
     return(class_string)
 
 def get_checkbox_elemen(driver, value): #getting checkbox element and xpath
-    xpath_selector = f"//span[contains(text(), {value})]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
+    xpath_selector = f"//span[contains(text(), '{value}')]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
         #Find the elements
     element = driver.find_element(By.XPATH, xpath_selector) 
     # print(xpath_selector)
