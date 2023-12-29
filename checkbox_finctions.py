@@ -81,3 +81,27 @@ def comparing_selected_selectors(driver, checkbox_list, green_checkbox_list):
         report_dict[original_checkbox] = [original_checkbox == green_checkbox, green_checkbox]
     return(comparing_values, not_aligned_values, report_dict)
 
+# check if unclick selector affected selected checkboxes
+def get_affected_checkboxes(driver, Selectors): #Selector should be a list
+    for selector in Selectors:
+        # Get checkbox status before click
+        checkbox_statuses_before = {}
+        for value in Selectors:
+            checkbox_statuses_before[value] = get_checkbox_selector_status(driver, value)
+
+        get_checkbox_elemen(driver, selector).click()
+        time.sleep(1)
+        # Get checkbox status after click
+        checkbox_statuses_after = {}
+        for value in Selectors:
+            checkbox_statuses_after[value] = get_checkbox_selector_status(driver, value)
+        time.sleep(1)
+        # compare checkboxes exclude unselected checkbox before
+        for key in checkbox_statuses_before.keys():
+            if key != selector:
+                if checkbox_statuses_before[key] != checkbox_statuses_after[key]:
+                    print(f"checkbox status {key} change after click on {selector}")
+        time.sleep(1)
+        # # Дополнительно можно распечатать полный словарь статусов до и после нажатия
+        # print("Статусы чекбоксов до нажатия:", checkbox_statuses_before)
+        # print("Статусы чекбоксов после нажатия:", checkbox_statuses_after)

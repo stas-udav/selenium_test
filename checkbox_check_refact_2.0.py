@@ -49,25 +49,10 @@ get_checkbox_elemen(driver, "Home").click() # turn on all checkboxes
 
 time.sleep(1)
  # Scroll down 
-driver.execute_script("window.scrollTo(0, 500);")
+driver.execute_script("window.scrollTo(0, 200);")
 time.sleep(1)
 
-Selectors = ['Downloads', 'Office', 'Documents', 'Desktop']
-checkbox_statuses_before = {}
-for value in Selectors:
-    checkbox_statuses_before[value] = get_checkbox_selector_status(driver, value)
-    time.sleep(1)
-    print(value)
-    click = get_checkbox_elemen(driver, value)
-    time.sleep(1)
-    click.click()
-    time.sleep(1)
-#     # Проверьте статусы остальных чекбоксов после изменения
-#     affected_checkboxes = {}
-#     for selector in Selectors:
-#         affected_checkboxes[value] = get_checkbox_selector_status(driver, value)            
-#         time.sleep(1)
-    
-#     print(checkbox_statuses_before, affected_checkboxes)
-#     time.sleep(1)
-# time.sleep(1)
+Selectors = ["'Downloads'", "'Office'", "'WorkSpace'", "'Desktop'"]
+get_affected_checkboxes(driver, Selectors)
+
+time.sleep(1)
