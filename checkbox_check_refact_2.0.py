@@ -35,22 +35,22 @@ else:
     print("Пиздец товарищи...")
 
 get_checkbox_elemen(driver, "Home").click() #unselect all checkboxes by clicking on the main checkbox
-time.sleep(1)
+time.sleep(0.5)
 
     # Comparing the original checkbox and green checkbox value(Checkbox names)
 comparing_values, not_aligned_values, report_dict = comparing_selected_selectors(driver,checkbox_list, green_checkbox_list)
-time.sleep(1)
+time.sleep(0.5)
 
 report_json(driver, "checkbox_errors_on_turn_on.json", report_dict) #Saving report of not aligned checkbox names
-time.sleep(1)
+time.sleep(0.5)
 
     # Unselecting main selectors in a category and checking if it does not affect other selected checkboxes
 get_checkbox_elemen(driver, "Home").click() # turn on all checkboxes
 
-time.sleep(1)
+time.sleep(0.5)
  # Scroll down 
 driver.execute_script("window.scrollTo(0, 200);")
-time.sleep(1)
+time.sleep(0.5)
 
 Selectors = ["Downloads", "Office", "WorkSpace", "Desktop"]
 get_affected_checkboxes(driver, Selectors)

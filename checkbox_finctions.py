@@ -45,9 +45,9 @@ def get_checkbox_selector_status(driver, value):
     # print(class_string)
     # print(xpath_selector)
     if "rct-icon rct-icon-check" in class_string:
-        print("Selected")
+        print(value, " - Selected")
     elif "rct-icon rct-icon-uncheck":
-        print("Unselected")
+        print(value, " - Unselected")
     else: 
         print("Not a checkbox_status")
     return(class_string)
@@ -94,13 +94,13 @@ def get_affected_checkboxes(driver, Selectors): #Selector should be a list
             checkbox_statuses_before[value] = get_checkbox_selector_status(driver, value)
 
         get_checkbox_elemen(driver, selector).click()
-        time.sleep(1)
+        time.sleep(0.5)
         # Get checkbox status after click
         checkbox_statuses_after = {}
         _, after_green_checkbox_list = get_green_ckeckbox_values(driver)        
         for value in Selectors:
             checkbox_statuses_after[value] = get_checkbox_selector_status(driver, value)
-        time.sleep(1)
+        time.sleep(0.5)
         # compare checkboxes exclude unselected checkbox before
         
         for key in checkbox_statuses_before.keys():
@@ -114,6 +114,6 @@ def get_affected_checkboxes(driver, Selectors): #Selector should be a list
                 if disappeared_values:
                     check_box_errors_turn_off_green[selector] = list(disappeared_values)                      
                     report_json(driver, "check_box_errors_turn_off_green_notifications.json", check_box_errors_turn_off_green)                    
-                    print("Error")
-        time.sleep(1)
+                    #print("Error")
+        time.sleep(0.5)
         
