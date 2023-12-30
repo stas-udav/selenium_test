@@ -64,7 +64,7 @@ def report_json(driver, path, report_dict):
         json.dump(report_dict, json_file)
     time.sleep(2)
 
- # Comparing the original checkbox and green checkbox value(Checkbox names)
+ # Comparing the original chreen checkbox value(Checkbox names)eckbox and g
 def comparing_selected_selectors(driver, checkbox_list, green_checkbox_list):
     comparing_values = {} # creating dict with original checkbox = key and green checkbox = value(receiving from function green_checked_values)
     not_aligned_values = []
@@ -83,9 +83,13 @@ def comparing_selected_selectors(driver, checkbox_list, green_checkbox_list):
 
 # check if unclick selector affected selected checkboxes
 def get_affected_checkboxes(driver, Selectors): #Selector should be a list
+    check_box_errors_turn_off_green = {}
+    bug_dict = {}
     for selector in Selectors:
         # Get checkbox status before click
         checkbox_statuses_before = {}
+        _, before_green_checkbox_list = get_green_ckeckbox_values(driver)
+        # _, before_checkbox_list = get_checkbox_value(driver)
         for value in Selectors:
             checkbox_statuses_before[value] = get_checkbox_selector_status(driver, value)
 
@@ -93,15 +97,23 @@ def get_affected_checkboxes(driver, Selectors): #Selector should be a list
         time.sleep(1)
         # Get checkbox status after click
         checkbox_statuses_after = {}
+        _, after_green_checkbox_list = get_green_ckeckbox_values(driver)        
         for value in Selectors:
             checkbox_statuses_after[value] = get_checkbox_selector_status(driver, value)
         time.sleep(1)
         # compare checkboxes exclude unselected checkbox before
+        
         for key in checkbox_statuses_before.keys():
             if key != selector:
                 if checkbox_statuses_before[key] != checkbox_statuses_after[key]:
                     print(f"checkbox status {key} change after click on {selector}")
+                    bug_dict[selector] = {[checkbox_statuses_after[key]]}
+                    report_json(driver, "check_box_errors_turn_off_checked", bug_dict)
+                # compare green_checkbox after click566
+                disappeared_values = set(before_green_checkbox_list) - {selector} - set(after_green_checkbox_list)
+                if disappeared_values:
+                    check_box_errors_turn_off_green[selector] = list(disappeared_values)                      
+                    report_json(driver, "check_box_errors_turn_off_green_notifications.json", check_box_errors_turn_off_green)                    
+                    print("Error")
         time.sleep(1)
-        # # Дополнительно можно распечатать полный словарь статусов до и после нажатия
-        # print("Статусы чекбоксов до нажатия:", checkbox_statuses_before)
-        # print("Статусы чекбоксов после нажатия:", checkbox_statuses_after)
+        
