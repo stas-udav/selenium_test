@@ -25,18 +25,7 @@ def get_green_ckeckbox_values(driver):
         green_name = green_value.text
         green_checked_values.append(green_name)
     return(green_list_length, green_checked_values)
-    # checking if checkbox selected correctly 
     
-def get_checkbox_status(driver):
-    # reciving checkbox status after second click 
-    check_box_values_after_click = get_checkbox_value()
-    green_checked_values_after_click = get_green_ckeckbox_values()[0]
-
-    if check_box_values_after_click == green_checked_values:
-        return "Zaebca"
-    else:
-        return "Pizdec"
-  
 def get_checkbox_selector_status(driver, value):
     checbox_len, check_box_values = get_checkbox_value(driver)    
     xpath_selector = f"//span[contains(text(), '{value}')]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
@@ -45,12 +34,22 @@ def get_checkbox_selector_status(driver, value):
     # print(class_string)
     # print(xpath_selector)
     if "rct-icon rct-icon-check" in class_string:
-        print(value, " - Selected")
+        status = "Selected"
     elif "rct-icon rct-icon-uncheck":
-        print(value, " - Unselected")
+         status = "Unselected"
     else: 
         print("Not a checkbox_status")
-    return(class_string)
+    return(value, class_string, status)
+
+def get_selectors_status(driver,selectors_list): # getting dict of selectors status key = selector, value = status(selected/unselected)
+    selectors_status_dict = {}
+    for selector in selectors_list:
+        selector, class_string, selector_status = get_checkbox_selector_status(driver, selector)
+        if selector_status == "Selected":
+            selectors_status_dict[selector] = "Selected"
+        else :
+            selectors_status_dict[selector] = "Unselected"
+    return selectors_status_dict
 
 def get_checkbox_elemen(driver, value): #getting checkbox element and xpath
     xpath_selector = f"//span[contains(text(), '{value}')]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
@@ -60,11 +59,14 @@ def get_checkbox_elemen(driver, value): #getting checkbox element and xpath
     return(element)
     
 def report_json(driver, path, report_dict):
-    with open(path,"w") as json_file:
+    #gerring data and time when report will be created
+    now = time.strftime("%Y-%m-%d_%H-%M-%S")
+    new_filename = f"{now}_{path}"
+    with open(new_filename,"w") as json_file:
         json.dump(report_dict, json_file)
     time.sleep(2)
 
- # Comparing the original chreen checkbox value(Checkbox names)eckbox and g
+ # Comparing the original green checkbox value(Checkbox names)eckbox 
 def comparing_selected_selectors(driver, checkbox_list, green_checkbox_list):
     comparing_values = {} # creating dict with original checkbox = key and green checkbox = value(receiving from function green_checked_values)
     not_aligned_values = []
@@ -81,39 +83,4 @@ def comparing_selected_selectors(driver, checkbox_list, green_checkbox_list):
         report_dict[original_checkbox] = [original_checkbox == green_checkbox, green_checkbox]
     return(comparing_values, not_aligned_values, report_dict)
 
-# check if unclick selector affected selected checkboxes
-def get_affected_checkboxes(driver, Selectors): #Selector should be a list
-    check_box_errors_turn_off_green = {}
-    bug_dict = {}
-    for selector in Selectors:
-        # Get checkbox status before click
-        checkbox_statuses_before = {}
-        _, before_green_checkbox_list = get_green_ckeckbox_values(driver)
-        # _, before_checkbox_list = get_checkbox_value(driver)
-        for value in Selectors:
-            checkbox_statuses_before[value] = get_checkbox_selector_status(driver, value)
-
-        get_checkbox_elemen(driver, selector).click()
-        time.sleep(0.5)
-        # Get checkbox status after click
-        checkbox_statuses_after = {}
-        _, after_green_checkbox_list = get_green_ckeckbox_values(driver)        
-        for value in Selectors:
-            checkbox_statuses_after[value] = get_checkbox_selector_status(driver, value)
-        time.sleep(0.5)
-        # compare checkboxes exclude unselected checkbox before
-        
-        for key in checkbox_statuses_before.keys():
-            if key != selector:
-                if checkbox_statuses_before[key] != checkbox_statuses_after[key]:
-                    print(f"checkbox status {key} change after click on {selector}")
-                    bug_dict[selector] = {[checkbox_statuses_after[key]]}
-                    report_json(driver, "check_box_errors_turn_off_checked", bug_dict)
-                # compare green_checkbox after click566
-                disappeared_values = set(before_green_checkbox_list) - {selector} - set(after_green_checkbox_list)
-                if disappeared_values:
-                    check_box_errors_turn_off_green[selector] = list(disappeared_values)                      
-                    report_json(driver, "check_box_errors_turn_off_green_notifications.json", check_box_errors_turn_off_green)                    
-                    #print("Error")
-        time.sleep(0.5)
-        
+       

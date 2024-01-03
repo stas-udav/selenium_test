@@ -16,6 +16,7 @@ time.sleep(1)
 
     #Checking if 1th checkbox is selected on loaded page
 checkbox_staus_Home = get_checkbox_selector_status(driver, "Home")
+print(checkbox_staus_Home)
 
 expand_all = driver.find_element(By.XPATH, '//button[@aria-label="Expand all"]') #expand all checbox tree
 expand_all.click()
@@ -52,7 +53,30 @@ time.sleep(0.5)
 driver.execute_script("window.scrollTo(0, 200);")
 time.sleep(0.5)
 
+# Checking if unselecting a checkbox affects other checkboxes
 Selectors = ["Downloads", "Office", "WorkSpace", "Desktop"]
-get_affected_checkboxes(driver, Selectors)
-
+green_selectors = ["downloads", "office", "workspace", "desktop"]
+check_box_errors_turn_off_checked = {} 
+check_box_errors_turn_off_green_notifications = {}
+for selector, green_selector in zip(Selectors,green_selectors) :    
+    checkbox_statuses_before = get_selectors_status(driver,Selectors)# Get checkbox status before click  
+    _,checkbox_green_statuses_before = get_green_ckeckbox_values(driver)       
+    get_checkbox_elemen(driver, selector).click()
+    time.sleep(1)
+    checkbox_statuses_after = get_selectors_status(driver,Selectors)# Get checkbox status after click  
+    _,checkbox_green_statuses_after = get_green_ckeckbox_values(driver)
+    #checking if some green checkboxes affected
+    affected_green = set(checkbox_green_statuses_before) - set(checkbox_green_statuses_after) - {green_selector}
+    check_box_errors_turn_off_green_notifications[report_json] = list(affected_green)
+    #checking if some checkboxes affected
+    affected_selectors = []
+    for key in checkbox_statuses_before.keys(): #checking if some checkboxes affected
+        if key != selector:            
+            if checkbox_statuses_before[key] != checkbox_statuses_after[key]:
+                print(f"Checkbox status for {key} changed after clicking on {selector}")
+                affected_selectors.append(key)
+                check_box_errors_turn_off_checked[selector] = affected_selectors
+report_json(driver, "check_box_errors_turn_off_checked.json", check_box_errors_turn_off_checked)
+    # time.sleep(1)
+report_json(driver, "check_box_errors_turn_off_green_notifications.json", check_box_errors_turn_off_green_notifications)
 time.sleep(1)
