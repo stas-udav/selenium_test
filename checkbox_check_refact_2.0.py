@@ -58,16 +58,17 @@ Selectors = ["Downloads", "Office", "WorkSpace", "Desktop"]
 green_selectors = ["downloads", "office", "workspace", "desktop"]
 check_box_errors_turn_off_checked = {} 
 check_box_errors_turn_off_green_notifications = {}
-for selector, green_selector in zip(Selectors,green_selectors) :    
-    checkbox_statuses_before = get_selectors_status(driver,Selectors)# Get checkbox status before click  
-    _,checkbox_green_statuses_before = get_green_ckeckbox_values(driver)       
+for selector, green_selector in zip(Selectors, green_selectors) :    
+    checkbox_statuses_before = get_selectors_status(driver, Selectors) #Get checkbox status before click  
+    _, checkbox_green_statuses_before = get_green_ckeckbox_values(driver)
+
     get_checkbox_elemen(driver, selector).click()
-    time.sleep(1)
-    checkbox_statuses_after = get_selectors_status(driver,Selectors)# Get checkbox status after click  
-    _,checkbox_green_statuses_after = get_green_ckeckbox_values(driver)
+    time.sleep(0.5)
+    checkbox_statuses_after = get_selectors_status(driver,Selectors) #Get checkbox status after click  
+    _, checkbox_green_statuses_after = get_green_ckeckbox_values(driver)
     #checking if some green checkboxes affected
     affected_green = set(checkbox_green_statuses_before) - set(checkbox_green_statuses_after) - {green_selector}
-    check_box_errors_turn_off_green_notifications[report_json] = list(affected_green)
+    check_box_errors_turn_off_green_notifications[selector] = list(affected_green)
     #checking if some checkboxes affected
     affected_selectors = []
     for key in checkbox_statuses_before.keys(): #checking if some checkboxes affected

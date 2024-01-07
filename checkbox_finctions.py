@@ -27,7 +27,7 @@ def get_green_ckeckbox_values(driver):
     return(green_list_length, green_checked_values)
     
 def get_checkbox_selector_status(driver, value):
-    checbox_len, check_box_values = get_checkbox_value(driver)    
+    # checbox_len, check_box_values = get_checkbox_value(driver)    
     xpath_selector = f"//span[contains(text(), '{value}')]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
     element = driver.find_element(By.XPATH, xpath_selector)
     class_string = element.get_attribute("class")    
@@ -41,7 +41,8 @@ def get_checkbox_selector_status(driver, value):
         print("Not a checkbox_status")
     return(value, class_string, status)
 
-def get_selectors_status(driver,selectors_list): # getting dict of selectors status key = selector, value = status(selected/unselected)
+# getting dict of selectors status key = selector, value = status(selected/unselected)
+def get_selectors_status(driver, selectors_list): 
     selectors_status_dict = {}
     for selector in selectors_list:
         selector, class_string, selector_status = get_checkbox_selector_status(driver, selector)
@@ -51,29 +52,31 @@ def get_selectors_status(driver,selectors_list): # getting dict of selectors sta
             selectors_status_dict[selector] = "Unselected"
     return selectors_status_dict
 
-def get_checkbox_elemen(driver, value): #getting checkbox element and xpath
+# getting checkbox element and xpath
+def get_checkbox_elemen(driver, value): 
     xpath_selector = f"//span[contains(text(), '{value}')]/preceding-sibling::span[(@class='rct-node-icon')]/preceding-sibling::span/*"
-        #Find the elements
+    # Find the elements
     element = driver.find_element(By.XPATH, xpath_selector) 
     # print(xpath_selector)
     return(element)
     
 def report_json(driver, path, report_dict):
-    #gerring data and time when report will be created
+    # getting data and time when report will be created
     now = time.strftime("%Y-%m-%d_%H-%M-%S")
     new_filename = f"{now}_{path}"
     with open(new_filename,"w") as json_file:
         json.dump(report_dict, json_file)
     time.sleep(2)
 
- # Comparing the original green checkbox value(Checkbox names)eckbox 
+# Comparing the original green checkbox value(Checkbox names)
 def comparing_selected_selectors(driver, checkbox_list, green_checkbox_list):
     comparing_values = {} # creating dict with original checkbox = key and green checkbox = value(receiving from function green_checked_values)
     not_aligned_values = []
     report_dict = {}  # dict for writing in json where key = checkbox name, value =   (boolean, green checkbox)
        
-    for index, value in enumerate(checkbox_list): #Adding pairs of a selected checkbox and a green checkbox (should be the same)
+    for index, value in enumerate(checkbox_list): # Adding pairs of a selected checkbox and a green checkbox (should be the same)
         comparing_values[value] = green_checkbox_list[index]
+
     # Comparing the original checkbox (key) to the green checkbox (value)
     for checkbox_original, gren_checkbox in comparing_values.items(): 
         if checkbox_original != gren_checkbox:
